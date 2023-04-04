@@ -1,9 +1,10 @@
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { AppLayout } from '../../components';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 
 export default function NewPost(props) {
-  const [postContent, setPostContent] = useState("")
+  const router = useRouter();
   const [topic, setTopic] = useState("Top 3 development interview tips")
   const [keywords, setKeywords] = useState("interview tip, resume tip, attire tip")
   const handleSubmit = async (e) => {
@@ -12,16 +13,17 @@ export default function NewPost(props) {
       method: "POST",
       headers: {'content-type': 'application/json'},
       body: JSON.stringify({topic, keywords})
-    });
+    }).catch(err => console.log('ERROR: ', err));
 
     const json = await response.json();
-    console.log("Results: ", json);
-    setPostContent(json.post.postContent);
+
+    if (json && json.postId) {
+      router.push(`/post/${json.postId}`).then();
+    }
   }
 
   return (
     <div>
-
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="topic">
@@ -45,10 +47,6 @@ export default function NewPost(props) {
           Generate
         </button>
       </form>
-
-      <div className="max-w-screen-sm p-10"
-           dangerouslySetInnerHTML={{__html: postContent}}>
-      </div>
     </div>
   );
 }
@@ -60,9 +58,7 @@ NewPost.getLayout = function getLayout(page, pageProps) {
 export const getServerSideProps = withPageAuthRequired({
   async getServerSideProps(ctx) {
     return {
-      props: {
-        customProps: 'Testing custom prop with user data'
-      }
+      props: {}
     }
   }
 });
