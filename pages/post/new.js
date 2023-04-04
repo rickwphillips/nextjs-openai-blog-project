@@ -4,8 +4,8 @@ import { useState } from 'react';
 
 export default function NewPost(props) {
   const [postContent, setPostContent] = useState("")
-  const [topic, setTopic] = useState("")
-  const [keywords, setKeywords] = useState("")
+  const [topic, setTopic] = useState("Top 3 development interview tips")
+  const [keywords, setKeywords] = useState("interview tip, resume tip, attire tip")
   const handleSubmit = async (e) => {
     e.preventDefault();
     const response = await fetch('/api/generatePost', {
