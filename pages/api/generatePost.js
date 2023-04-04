@@ -7,15 +7,14 @@ export default async function handler(req, res) {
   });
   const openai = new OpenAIApi(config);
 
-  const topic = "Top 10 tips for web developers";
-  const keywords = "new-graduates, common-issues, best-places-to-start";
+  const { topic, keywords } = req.body;
 
   const response = await openai.createCompletion({
       model: "text-davinci-003",
       temperature: 0.6,
       max_tokens: 3600,
-      //prompt: "Say hello"
-      prompt: `Write a short and SEO-friendly blog post about ${topic}, that targets the following comma-separated: ${keywords}.
+      prompt: `Write a short and SEO-friendly blog post about ${topic}, 
+      that targets the following comma-separated: ${keywords}.
       The content should be formatted in SEO-friendly HTML.
       The response must also include appropriate HTML title and meta description content.
       The return format must be stringified JSON in the following format:
@@ -29,6 +28,7 @@ export default async function handler(req, res) {
 
 
   if (response.status === 200) {
-    res.status(200).json({ post: JSON.parse(response.data.choices[0].text) });
+    console.log(response.status, response.data.choices[0]);
+    res.status(200).json({ post: JSON.parse(response.data.choices[0].text.split("\n").join('')) });
   }
 }
