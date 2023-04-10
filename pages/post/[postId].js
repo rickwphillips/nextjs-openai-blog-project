@@ -1,9 +1,10 @@
 import { AppLayout } from '../../components';
 import { getSession, withPageAuthRequired } from '@auth0/nextjs-auth0';
-import clientPromise from '../../lib/mongodb';
 import { ObjectId } from 'mongodb';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHashtag } from '@fortawesome/free-solid-svg-icons';
+import clientPromise from '../../lib/mongodb';
+import { getAppProps } from '../../utils/getAppProps';
 
 export default function Post(props) {
 
@@ -39,6 +40,7 @@ Post.getLayout = function getLayout(page, pageProps) {
 
 export const getServerSideProps = withPageAuthRequired({
   async getServerSideProps(ctx) {
+    const props = await getAppProps(ctx);
     const userSession = await getSession(ctx.req, ctx.res);
     const client = await clientPromise;
     const db = client.db('RicksBlogStandard');
@@ -65,8 +67,9 @@ export const getServerSideProps = withPageAuthRequired({
           postContent: post.postContent,
           title: post.title,
           metaDescription: post.metaDescription,
-          keywords: post.keywords
-        }
+          keywords: post.keywords,
+        },
+        ...props
       }
     }
   }

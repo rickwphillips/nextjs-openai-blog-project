@@ -2,11 +2,12 @@ import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { AppLayout } from '../../components';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import { getAppProps } from '../../utils/getAppProps';
 
 export default function NewPost(props) {
   const router = useRouter();
-  const [topic, setTopic] = useState("Top 3 development interview tips")
-  const [keywords, setKeywords] = useState("interview tip, resume tip, attire tip")
+  const [topic, setTopic] = useState("")
+  const [keywords, setKeywords] = useState("")
   const handleSubmit = async (e) => {
     e.preventDefault();
     const response = await fetch('/api/generatePost', {
@@ -23,7 +24,7 @@ export default function NewPost(props) {
   }
 
   return (
-    <div>
+    <div className={'px-2'}>
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="topic">
@@ -57,8 +58,9 @@ NewPost.getLayout = function getLayout(page, pageProps) {
 
 export const getServerSideProps = withPageAuthRequired({
   async getServerSideProps(ctx) {
+    const props = await getAppProps(ctx);
     return {
-      props: {}
+      props
     }
   }
-});
+})
