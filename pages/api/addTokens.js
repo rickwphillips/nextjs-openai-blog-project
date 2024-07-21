@@ -5,7 +5,6 @@ import stripeInit from 'stripe';
 const stripe = stripeInit(process.env.STRIPE_SECRET_KEY);
 
 export default async function handler(req, res) {
-  debugger;
   const { user } = await getSession(req, res);
 
   const lineItems = [{
